@@ -35,26 +35,39 @@
 
 ### 3. 핵심 알고리즘
 
-- 아두이노 - 여섯 개의 초음파 센서로부터 센서값을 받아옴
-  ? Arduino관련 라이브러리 중 NewPing 라이브러리 사용 - 0.5초 단위로 초음파 센서값 배열을 Update 해줌 - Serial print를 사용하여 Local Server의 Client로 전송
+- 아두이노
 
-- Local Server의 Client - Local Server의 Client는 아두이노로부터 Python serial 라이브러리로 센서값을 받아옴. - 문자열 형태로 받아온 센서 값들을 strip 해주고 list로 만들어줌 - 해당 list를 0.5초 단위로 Local Server로 전송
+  - 여섯 개의 초음파 센서로부터 센서값을 받아옴
+    ? Arduino관련 라이브러리 중 NewPing 라이브러리 사용
+    ? 0.5초 단위로 초음파 센서값 배열을 Update 해줌
+    ? Serial print를 사용하여 Local Server의 Client로 전송
 
-- Local Server - 메인 서버에 접속 후 자신의 ID를 전송 (ex. 신공학관) - 한 주차장에는 여러 층이 있을 수 있고, 각 주차장마다의 층수가 상이하므로 client 접속을 thread로 처리하여 다중 접속구현 - 각 client들에서 받은 센서값이 5 보다 작으면 주차 불가능, 5 이상이면 주차 가능을 판별하여 { location, Floor, 0, 1, 2, 3, 4 } 형태의 dictionary를 만듬 - 해당 dictionary를 0.5초 단위로 메인 서버에 전송
+- Local Server의 Client
+  ? Local Server의 Client는 아두이노로부터 Python serial 라이브러리로 센서값을 받아옴.
+  ? 문자열 형태로 받아온 센서 값들을 strip 해주고 list로 만들어줌
+  ? 해당 list를 0.5초 단위로 Local Server로 전송
+
+- Local Server
+  ? 메인 서버에 접속 후 자신의 ID를 전송 (ex. 신공학관)
+  ? 한 주차장에는 여러 층이 있을 수 있고, 각 주차장마다의 층수가 상이하므로 client 접속을 thread로 처리하여 다중 접속구현
+  ? 각 client들에서 받은 센서값이 5 보다 작으면 주차 불가능, 5 이상이면 주차 가능을 판별하여 { location, Floor, 0, 1, 2, 3, 4 } 형태의 dictionary를 만듬 ? 해당 dictionary를 0.5초 단위로 메인 서버에 전송
 
 - Main Server
 
-  - 주차장 핸들러, 클라이언트 핸들러, 관리자 핸들러 3개의 thread로 각 파트의 다중 접속처리 - 주차장 핸들러에서는 주차장(Local Server)들의 접속을 처리하고 센서값 dictionary를 받을때마다 update하여 정보를 관리
-
+  - 주차장 핸들러, 클라이언트 핸들러, 관리자 핸들러 3개의 thread로 각 파트의 다중 접속처리
+    ? 주차장 핸들러에서는 주차장(Local Server)들의 접속을 처리하고 센서값 dictionary를 받을때마다 update하여 정보를 관리
   - 클라이언트 핸들러에서는 클라이언트의 다중 접속을 처리하고 클라이언트로부터 어떤 주차장인지의 string 과 조회인지 예약인지의 string을 받아 해당 요청을 수행
-
   - 관리자 핸들러에서는 관리자 접속시 실시간 주차장 정보들을 계속해서 Admin으로 보내주고 현재 접속한 Client들의 ID를 전송.
-
   - 현재 주차장 정보를 txt형태로 각 주차장 별로 생성하여 실시간으로 write 해줌
 
-- Client - 메인서버에 접속시 자신의 ID를 임의로 생성 - ui 의 pushButton event를 처리하여 어느 주차장의 조회, 예약 인지 string을 메인 서버에 전송 - 메인 서버에서 받아온 dictionary를 ui로 출력
+- Client
+  ? 메인서버에 접속시 자신의 ID를 임의로 생성
+  ? ui 의 pushButton event를 처리하여 어느 주차장의 조회, 예약 인지 string을 메인 서버에 전송
+  ? 메인 서버에서 받아온 dictionary를 ui로 출력
 
-- Admin - ui의 testBrowser로 패스워드를 입력받아 해당 string을 메인 서버에 전송하여 메인서버는 string이 패스워드를 검증 후 결과 값을 Admin으로 전송 - 접속 후 메인 서버로부터 계속 Receive를 하여 ui 로 출력
+- Admin
+  ? ui의 testBrowser로 패스워드를 입력받아 해당 string을 메인 서버에 전송하여 메인서버는 string이 패스워드를 검증 후 결과 값을 Admin으로 전송
+  ? 접속 후 메인 서버로부터 계속 Receive를 하여 ui 로 출력
 
 ### 4. System Design
 
