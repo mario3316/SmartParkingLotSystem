@@ -1,0 +1,8 @@
+arduino_part/__pycache__/*
+arduino_part/.idea/*
+arduino_part/dist/*
+*.spec
+
+MainServer/__pycache__/*
+MainServer/.idea/*
+MainServer/dist/*
